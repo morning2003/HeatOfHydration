@@ -1,0 +1,55 @@
+﻿{
+	"Version":"6.8.8.0",
+	"Title":"按单统计销售明细报表",
+	"Author":"锐浪报表软件",
+	"Description":"分组字段只在本分组项的第一笔记录显示：\r\n通过在内容格的 “取显示文字脚本” 属性上写报表脚本来实现，按条件设置相关内容格的显示文字。通过 IGridppReport.SystemVarValue2 方法获取当前的分组行号，如果不是1，则把内容格的 DisplayText 设置为空字符串。\r\n",
+	"PrintAsDesignPaper":false,
+	"Font":{
+		"Name":"宋体",
+		"Size":90000,
+		"Weight":400,
+		"Charset":134
+	},
+	"InitializeScript":"Report.ParameterByName(\"UnionName\").AsString = \"\";",
+	"Printer":{
+		"Size":256,
+		"Width":27,
+		"Height":39.7,
+		"LeftMargin":0,
+		"TopMargin":2.35479,
+		"RightMargin":0
+	},
+	"Parameter":[
+		{
+			"Name":"Comment",
+			"Value":"用脚本实现每个分组的统计值串接显示在报表尾：\r\n1、定义一个参数，用来存储串接值。\r\n2、在报表的“初始化脚本”上初始化参数值。\r\n3、在分组的“分组结束脚本”上串接当前统计值。\r\n4、在报表尾上用静态框或综合文本框显示此参数。"
+		},
+		{
+			"Name":"UnionName"
+		}
+	],
+	"ReportHeader":[
+		{
+			"Height":1.00542,
+			"Control":[
+				{
+					"Type":"StaticBox",
+					"Name":"TitleBox",
+					"Center":"Horizontal",
+					"Left":6.05896,
+					"Top":0.396875,
+					"Width":14.8696,
+					"Height":0.582083,
+					"Font":{
+						"Name":"宋体",
+						"Size":150000,
+						"Bold":true,
+						"Charset":134
+					},
+					"TextAlign":"MiddleCenter",
+					"Text":"分组统计"
+				}
+			]
+		}
+	]
+}

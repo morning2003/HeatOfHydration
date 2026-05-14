@@ -1,0 +1,65 @@
+﻿<template>
+    <vol-edit ref="edit"
+              :keyField="key"
+              :tableName="tableName"
+              :tableCNName="tableCNName"
+              :labelWidth="labelWidth"
+              :formFields="editFormFields"
+              :formOptions="editFormOptions"
+              :detail-height="detailHeight"
+              :detail="detail"
+              :details="details">
+        <template #header>
+            <!-- 自定义数据槽显示 -->
+        </template>
+        <template #content>
+            <!-- 自定义数据槽显示 -->
+        </template>
+        <template #foooter>
+            <!-- 自定义数据槽显示 -->
+        </template>
+    </vol-edit>
+</template>
+<script lang="jsx">
+    export default { name: "#table_edit" };
+</script>
+<script setup lang="jsx">
+    //新窗口编辑默认使用的纯vue3语法,文档参考：http://doc.volcore.xyz/edit/guid.html
+    import editOptions from "./options.js";
+    import { ref, reactive, getCurrentInstance, nextTick, } from "vue";
+    import { useRouter, useRoute } from "vue-router";
+    const emit = defineEmits([])
+    const props = defineProps({})
+
+    //发起请求proxy.http.get/post
+    //消息提示proxy.$message.success()
+    const { proxy } = getCurrentInstance();
+
+    //这里表单与明细表参数，具体信息看options.js里面
+    const {
+        key,
+        tableName,
+        tableCNName,
+        editFormFields,
+        editFormOptions,
+        detail,
+        details,
+    } = reactive(editOptions());
+
+    //获取路由参数
+    const route = useRoute();
+    //是否新建操作
+    let isAdd = !route.query.id;
+
+    //vol-edit组件对象
+    const edit = ref(null);
+
+    //表单标签文字显示宽度
+    const labelWidth = 90;
+
+    //明细表高度
+    const detailHeight = 240;
+
+    defineExpose({})
+
+</script>

@@ -1,0 +1,53 @@
+异常信：:Object does not match target type.检查是否使用了Include，改为Includes
+
+1、主从表分合计不能groupby与tostring("f2")    
+ SummaryExpress = (ISugarQueryable<Demo_Order> queryable) =>
+            {
+                //求和这里不需要group
+                return queryable.Select(x => new
+                {
+                    //注意大小写和数据库字段大小写一样
+                    TotalPrice =SqlFunc.AggregateSum(x.TotalPrice),
+                    TotalQty = SqlFunc.AggregateSum(x.TotalQty)
+                })
+                .FirstOrDefault();
+            };
+
+2、主从表需要明细表list对上添加Navigate配置
+        [Navigate(NavigateType.OneToMany, nameof(Order_Id), nameof(Order_Id))]
+    public List<Demo_OrderList> Demo_OrderList { get; set; }
+
+3、表需要主键属性
+        [SugarColumn(IsPrimaryKey = true)]
+
+4、GetDetailPage方法需要重新生成查询query
+  //查询界面统计求等字段
+            //这里sqlsugar会把IQueryablePage里面的排序字段也添加进去了就会导致异常2023.10.17
+            queryeable = repository.DbContext.Set<Detail>().Where(whereExpression);
+            gridData.summary = GetDetailSummary<Detail>(queryeable);
+
+5、GetPageData方法需要重新生成查询query
+    //查询界面统计求等字段
+                //这里sqlsugar会把IQueryablePage里面的排序字段也添加进去了就会导致异常2023.10.17
+                if (SummaryExpress != null)
+                {
+                    options = ValidatePageOptions(options, out ISugarQueryable<T> queryableSummary);
+                   // queryableSummary = QueryRelativeExpression.Invoke(queryableSummary);
+                    pageGridData.summary = SummaryExpress.Invoke(queryableSummary);
+                }
+
+6、DictionaryManager字典查询，需要将Include改为Includes
+
+    _dictionaries = DBServerProvider.DbContext
+                    .Set<Sys_Dictionary>()
+                    .Includes(c => c.Sys_DictionaryList)
+                    .Where(x => x.Enable == 1)
+                    .ToList();
+
+7、角色控制器、Sys_WorkFlowService、 //WorkFlowManager中 dbContext.Add(workFlowTable); Sys_TableInfoService、Sys_WorkFlowController中Include改为Includes
+
+8、sys_table加上        [SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
+InitTable(int 里面 改为 repository.SqlSugarClient.InsertNav<Sys_TableInfo>(tableInfo).Include(x => x.TableColumns).ExecuteCommand();
+           /// repository.Add(tableInfo, true);
+
+9、sys_userole、Sys_RoleAuth、角色、部门表也要加上 [SugarColumn(IsPrimaryKey = true,IsIdentity =true)]
